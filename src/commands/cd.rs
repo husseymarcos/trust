@@ -3,10 +3,10 @@ use anyhow::Result;
 use std::path::PathBuf;
 
 pub fn cd(root: PathBuf, query: Option<String>, args: &TryArgs, mode: ExecutionMode) -> Result<()> {
-    if let Some(query) = &query {
-        if looks_like_git_url(query) {
-            return crate::commands::clone::clone(root, query.clone(), None, mode);
-        }
+    if let Some(query) = &query
+        && looks_like_git_url(query)
+    {
+        return crate::commands::clone::clone(root, query.clone(), None, mode);
     }
 
     if args.and_exit {
