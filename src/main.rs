@@ -1,63 +1,18 @@
 mod cli;
 mod commands;
+mod context;
+mod runner;
 use anyhow::Result;
-use clap::Parser;
-use cli::TryArgs;
+use cli::Args;
+use context::{RunContext, Runnable};
 
 fn main() -> Result<()> {
-    let args = match TryArgs::try_parse() {
-        Ok(a) => a,
-        Err(e) if e.kind() == clap::error::ErrorKind::DisplayVersion => {
-            println!("try {}", env!("CARGO_PKG_VERSION"));
-            return Ok(());
-        }
-        Err(e) => return Err(e.into()),
-    };
-
-    let command = args.command.clone().or_else(|| {
-        if args.query.is_empty() {
-            Some(cli::Command::Cd { query: None })
-        } else {
-            let query = args.query.join(" ");
-            Some(if crate::commands::cd::looks_like_git_url(&query) {
-                cli::Command::Clone {
-                    url: query,
-                    name: None,
-                }
-            } else {
-                cli::Command::Cd { query: Some(query) }
-            })
-        }
-    });
-
+    let args = Args::parse()?;
+    let command = args.resolve_command();
     let root = args.root_path()?;
-
-    match command {
-        Some(cli::Command::Init { path }) => commands::init::init(path.clone())?,
-        Some(cli::Command::Cd { query }) => {
-            commands::cd::cd(root, query.clone(), &args, cli::ExecutionMode::Direct)?
-        }
-        Some(cli::Command::Exec { exec_command }) => match exec_command {
-            cli::ExecCommand::Cd { query } => {
-                commands::cd::cd(root, query.clone(), &args, cli::ExecutionMode::Script)?
-            }
-            cli::ExecCommand::Clone { url, name } => {
-                commands::clone::clone(root, url.clone(), name.clone(), cli::ExecutionMode::Script)?
-            }
-            cli::ExecCommand::Worktree { name } => commands::worktree::worktree_dir(
-                root,
-                Some(name.clone()),
-                cli::ExecutionMode::Script,
-            )?,
-        },
-        Some(cli::Command::Clone { url, name }) => {
-            commands::clone::clone(root, url.clone(), name.clone(), cli::ExecutionMode::Direct)?
-        }
-        Some(cli::Command::Worktree { name }) | Some(cli::Command::Dot { name }) => {
-            commands::worktree::worktree_dir(root, Some(name.clone()), cli::ExecutionMode::Direct)?
-        }
-        None => commands::cd::cd(root, None, &args, cli::ExecutionMode::Direct)?,
-    }
-
-    Ok(())
+    let ctx = RunContext {
+        root: root.clone(),
+        args: &args,
+    };
+    command.run(&ctx)
 }

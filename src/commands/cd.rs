@@ -1,14 +1,13 @@
-use crate::cli::{ExecutionMode, TryArgs};
+use crate::context::RunContext;
 use anyhow::Result;
-use std::path::PathBuf;
 
 const GIT_URL_PREFIXES: &[&str] = &["http://", "https://", "git@", "git://"];
 
-pub fn cd(root: PathBuf, query: Option<String>, args: &TryArgs, mode: ExecutionMode) -> Result<()> {
+pub fn cd(ctx: &RunContext<'_>, query: Option<String>) -> Result<()> {
     if let Some(q) = query.filter(|s| looks_like_git_url(s)) {
-        return crate::commands::clone::clone(root, q, None, mode);
+        return crate::commands::clone::clone(ctx, q, None);
     }
-    if args.and_exit {
+    if ctx.args.and_exit {
         eprintln!("Interactive selector (cancelled)");
         std::process::exit(1);
     }
