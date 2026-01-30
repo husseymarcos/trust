@@ -3,14 +3,11 @@ use std::path::{Path, PathBuf};
 
 pub fn prepare_target_dir(root: &PathBuf, dir_name: &str) -> Result<PathBuf> {
     let target_path = root.join(dir_name);
-
     if target_path.exists() {
         anyhow::bail!("Directory already exists: {}", target_path.display());
     }
-
     std::fs::create_dir_all(root)
         .with_context(|| format!("Failed to create root directory: {}", root.display()))?;
-
     Ok(target_path)
 }
 

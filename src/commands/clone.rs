@@ -22,37 +22,31 @@ pub fn clone(
                 .arg(&target_path)
                 .status()
                 .with_context(|| format!("Failed to clone repository: {git_uri}"))?;
-
             if !status.success() {
                 anyhow::bail!("git clone failed");
             }
-
             print_cd_command(&target_path);
         }
         ExecutionMode::Script => {
             print_script_header();
-            let abs_path = target_path
+            let abs = target_path
                 .canonicalize()
                 .unwrap_or_else(|_| target_path.clone());
-            let abs_path_str = abs_path.to_string_lossy();
-            println!("git clone '{git_uri}' '{abs_path_str}' && \\");
-            println!("  cd '{abs_path_str}'");
+            let abs_str = abs.to_string_lossy();
+            println!("git clone '{git_uri}' '{abs_str}' && \\");
+            println!("  cd '{abs_str}'");
         }
     }
-
     Ok(())
 }
 
-fn generate_default_name(git_uri: &str) -> String {
+pub(crate) fn generate_default_name(git_uri: &str) -> String {
     let date = Local::now().format("%Y-%m-%d");
-
     let parts: Vec<&str> = git_uri.trim_end_matches(".git").split('/').collect();
-
     let (user, repo) = if parts.len() >= 2 {
         (parts[parts.len() - 2], parts[parts.len() - 1])
     } else {
         ("user", parts.last().copied().unwrap_or("repo"))
     };
-
     format!("{date}-{user}-{repo}")
 }
