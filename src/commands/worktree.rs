@@ -4,7 +4,7 @@ use chrono::Local;
 use std::path::Path;
 use std::process::Command;
 
-pub fn worktree_dir(ctx: &RunContext<'_>, name: Option<String>) -> Result<()> {
+pub fn worktree_dir(ctx: &RunContext, name: Option<String>) -> Result<()> {
     let base_name = name.ok_or_else(|| anyhow::anyhow!("Name required for worktree"))?;
     let dir_name = format!("{}-{base_name}", Local::now().format("%Y-%m-%d"));
     let target_path = ctx.prepare_target_path(&dir_name)?;

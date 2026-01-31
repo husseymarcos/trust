@@ -1,13 +1,11 @@
-use crate::args::Args;
 use anyhow::{Context as _, Result};
 use std::path::{Path, PathBuf};
 
-pub struct RunContext<'a> {
+pub struct RunContext {
     pub root: PathBuf,
-    pub args: &'a Args,
 }
 
-impl RunContext<'_> {
+impl RunContext {
     pub fn prepare_target_path(&self, dir_name: &str) -> Result<PathBuf> {
         let target_path = self.root.join(dir_name);
         if target_path.exists() {

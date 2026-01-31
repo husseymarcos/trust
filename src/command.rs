@@ -21,11 +21,11 @@ pub enum Command {
 }
 
 pub trait Runnable {
-    fn run(self, ctx: &RunContext<'_>) -> Result<()>;
+    fn run(self, ctx: &RunContext) -> Result<()>;
 }
 
 impl Runnable for Command {
-    fn run(self, ctx: &RunContext<'_>) -> Result<()> {
+    fn run(self, ctx: &RunContext) -> Result<()> {
         match self {
             Command::Init { path } => commands::init::init(path),
             Command::Cd { query } => commands::cd::cd(ctx, query),

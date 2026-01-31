@@ -47,7 +47,7 @@ impl Args {
         if let Some(p) = &self.path {
             return Ok(p.clone());
         }
-        if let Ok(p) = std::env::var("TRY_PATH") {
+        if let Ok(p) = std::env::var("TRUST_PATH") {
             return Ok(PathBuf::from(p));
         }
         let home = std::env::var("HOME")

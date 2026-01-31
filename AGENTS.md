@@ -7,7 +7,7 @@
 - `try worktree dir [name]`: Same as above but explicit CLI, useful without the shell wrapper.
 - `try clone <git-uri> [name]`: Clones into the root. Default name is `YYYY-MM-DD-user-repo` (strips `.git`). Optional `name` overrides.
 - Flags: `--path PATH` (for `cd`/`clone`) overrides the root for that call; `--help` prints global help.
-- Environment: `TRY_PATH` sets the default root when not using `--path`.
+- Environment: `TRUST_PATH` sets the default root when not using `--path`.
 - UI keys: `↑/↓` or `Ctrl-P/N` navigate, `Enter` select, `Backspace` delete char, `Ctrl-D` delete dir (requires typing `YES`), `ESC` cancel.
 
 ### Shorthands and Worktrees
@@ -21,12 +21,12 @@
   - `fix: reset token clears colors`
   - `ui: improve selected row highlight`
   - `nix: wire Home Manager module`
-- PRs: include a clear description, before/after terminal screenshot or asciinema for UI changes, linked issues, and notes on behavior or config (`TRY_PATH`). Update `README.md` when flags, defaults, or UX change.
+- PRs: include a clear description, before/after terminal screenshot or asciinema for UI changes, linked issues, and notes on behavior or config (`TRUST_PATH`). Update `README.md` when flags, defaults, or UX change.
 
 ## Security & Configuration Tips
-- `TRY_PATH` controls the workspace root; avoid pointing at sensitive paths.
+- `TRUST_PATH` controls the workspace root; avoid pointing at sensitive paths.
 - Destructive action (delete) requires typing `YES`; keep this safeguard.
-- `clone` shells out to `git`; it writes only under `TRY_PATH`.
+- `clone` shells out to `git`; it writes only under `TRUST_PATH`.
 
 ## Spec System
 - `spec/`: Contains markdown specifications and automated tests.

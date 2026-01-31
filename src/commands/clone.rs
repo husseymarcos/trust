@@ -3,7 +3,7 @@ use anyhow::{Context as _, Result};
 use chrono::Local;
 use std::process::Command;
 
-pub fn clone(ctx: &RunContext<'_>, git_uri: String, name: Option<String>) -> Result<()> {
+pub fn clone(ctx: &RunContext, git_uri: String, name: Option<String>) -> Result<()> {
     let dir_name = name.unwrap_or_else(|| generate_default_name(&git_uri));
     let target_path = ctx.prepare_target_path(&dir_name)?;
     let status = Command::new("git")

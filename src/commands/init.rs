@@ -9,8 +9,9 @@ fn exe() -> String {
 
 pub fn init(path: Option<PathBuf>) -> Result<()> {
     let root = path
-        .or_else(|| std::env::var("TRY_PATH").ok().map(PathBuf::from))
-        .ok_or_else(|| anyhow::anyhow!("PATH required (either as argument or TRY_PATH env var)"))?;
+        .or_else(|| std::env::var("TRUST_PATH").ok().map(PathBuf::from))
+        .or_else(|| std::env::current_dir().ok())
+        .ok_or_else(|| anyhow::anyhow!("PATH required (argument, TRUST_PATH, or current directory)"))?;
     let root_str = root.to_string_lossy();
     let shell = std::env::var("SHELL")
         .ok()
@@ -32,7 +33,7 @@ fn sh_function(root: &str) -> String {
     format!(
         r#"try() {{
     local output
-    export TRY_PATH="{}"
+    export TRUST_PATH="{}"
     output=$("{}" "$@")
     if [ -n "$output" ]; then
         eval "$output"
@@ -46,7 +47,7 @@ fn sh_function(root: &str) -> String {
 fn fish_function(root: &str) -> String {
     format!(
         r#"function try
-    set -x TRY_PATH "{}"
+    set -x TRUST_PATH "{}"
     set output ({} $argv)
     if [ -n "$output" ]
         eval $output
