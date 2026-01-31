@@ -22,7 +22,3 @@ impl RunContext<'_> {
         println!("cd '{}'", path.to_string_lossy());
     }
 }
-
-pub trait Runnable {
-    fn run(self, ctx: &RunContext<'_>) -> anyhow::Result<()>;
-}

@@ -2,10 +2,10 @@ mod args;
 mod command;
 mod commands;
 mod context;
-mod runner;
 use anyhow::Result;
 use args::Args;
-use context::{RunContext, Runnable};
+use command::Runnable;
+use context::RunContext;
 
 fn main() -> Result<()> {
     let args = Args::parse()?;
