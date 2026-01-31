@@ -1,9 +1,10 @@
-mod cli;
+mod args;
+mod command;
 mod commands;
 mod context;
 mod runner;
 use anyhow::Result;
-use cli::Args;
+use args::Args;
 use context::{RunContext, Runnable};
 
 fn main() -> Result<()> {

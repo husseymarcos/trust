@@ -1,11 +1,12 @@
+use crate::command::Command;
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::Parser;
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
-#[command(name = "try", version = env!("CARGO_PKG_VERSION"), about = "Ephemeral workspace manager")]
+#[command(name = "trust", version = env!("CARGO_PKG_VERSION"), about = "Rusty directories for every vibe")]
 #[command(
-    long_about = "Trust is an ephemeral workspace manager that helps organize project directories with date-prefixed naming."
+    long_about = "Quickly create and jump into fresh folders for your experiments."
 )]
 pub struct Args {
     #[command(subcommand)]
@@ -16,31 +17,8 @@ pub struct Args {
         help = "Override tries directory (default: ~/src/tries)"
     )]
     pub path: Option<PathBuf>,
-    #[arg(long, help = "Disable ANSI color codes in output")]
-    pub no_colors: bool,
-    #[arg(long, hide = true)]
-    pub and_exit: bool,
-    #[arg(long, hide = true)]
-    pub and_keys: Option<String>,
-    #[arg(long, hide = true)]
-    pub no_expand_tokens: bool,
     #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
     pub query: Vec<String>,
-}
-
-/// Top-level commands: what the user invokes directly (`trust init`, `trust clone …`, etc.).
-#[derive(Debug, Clone, Subcommand)]
-pub enum Command {
-    #[command(about = "Output shell function definition for shell integration")]
-    Init { path: Option<PathBuf> },
-    #[command(about = "Interactive directory selector with fuzzy search")]
-    Cd { query: Option<String> },
-    #[command(about = "Clone a git repository into a dated directory")]
-    Clone { url: String, name: Option<String> },
-    #[command(about = "Create a git worktree in a dated directory")]
-    Worktree { name: String },
-    #[command(name = ".", about = "Shorthand for worktree (requires name)")]
-    Dot { name: String },
 }
 
 impl Args {

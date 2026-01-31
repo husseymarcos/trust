@@ -7,13 +7,9 @@ pub fn cd(ctx: &RunContext<'_>, query: Option<String>) -> Result<()> {
     if let Some(q) = query.filter(|s| looks_like_git_url(s)) {
         return crate::commands::clone::clone(ctx, q, None);
     }
-    if ctx.args.and_exit {
-        eprintln!("Interactive selector (cancelled)");
-        std::process::exit(1);
-    }
     anyhow::bail!("Interactive selector not yet implemented")
 }
 
-pub fn looks_like_git_url(s: &str) -> bool {
+fn looks_like_git_url(s: &str) -> bool {
     GIT_URL_PREFIXES.iter().any(|p| s.starts_with(p)) || (s.contains("://") && s.contains(".git"))
 }

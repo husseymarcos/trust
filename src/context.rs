@@ -1,4 +1,4 @@
-use crate::cli::Args;
+use crate::args::Args;
 use anyhow::{Context as _, Result};
 use std::path::{Path, PathBuf};
 

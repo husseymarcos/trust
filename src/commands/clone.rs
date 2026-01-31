@@ -19,7 +19,7 @@ pub fn clone(ctx: &RunContext<'_>, git_uri: String, name: Option<String>) -> Res
     Ok(())
 }
 
-pub(crate) fn generate_default_name(git_uri: &str) -> String {
+fn generate_default_name(git_uri: &str) -> String {
     let date = Local::now().format("%Y-%m-%d");
     let parts: Vec<&str> = git_uri.trim_end_matches(".git").split('/').collect();
     let (user, repo) = if parts.len() >= 2 {

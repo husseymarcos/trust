@@ -1,4 +1,4 @@
-use crate::cli::Command;
+use crate::command::Command;
 use crate::commands;
 use crate::context::{RunContext, Runnable};
 use anyhow::Result;
